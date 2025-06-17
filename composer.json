@@ -1,0 +1,33 @@
+{
+    "name": "microweber-modules/saas-connector",
+    "type": "microweber-module",
+    "description": "SaaS Connector module for Microweber CMS",
+    "keywords": [
+        "microweber",
+        "saas",
+        "connector"
+    ],
+    "homepage": "https://microweber.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MW Team",
+            "email": "info@microweber.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\SaasConnector\\": ""
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\SaasConnector\\Providers\\SaasConnectorServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+

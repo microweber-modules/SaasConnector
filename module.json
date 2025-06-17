@@ -1,0 +1,14 @@
+{
+    "name": "SaasConnector",
+    "alias": "saas-connector",
+    "description": "SaaS Connector module for Microweber CMS",
+    "keywords": ["microweber", "saas", "connector"],
+    "version": "1.0.0",
+
+    "priority": 0,
+    "providers": [
+        "Modules\\SaasConnector\\Providers\\SaasConnectorServiceProvider"
+    ],
+    "files": ["Support/helpers.php"]
+}
+
