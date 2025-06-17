@@ -55,14 +55,21 @@ class SaasHelper
         if (!$websiteManagerUrl) {
             return false;
         }
+        $domain = site_url();
+        //remove end slash
+
+        $websiteManagerUrl = rtrim($websiteManagerUrl, '/');
+
+        $client = new Client();
+        $response = $client->request('GET', $websiteManagerUrl . '/api/websites/verify-login-token', [
+            'form_params' => [
+                'token' => $token,
+                'domain' => $domain
+            ]
+        ]);
+
 
         try {
-            $client = new Client();
-            $response = $client->request('POST', $websiteManagerUrl . '/api/validate-login-token', [
-                'form_params' => [
-                    'token' => $token
-                ]
-            ]);
 
             if ($response->getStatusCode() == 200) {
                 return json_decode($response->getBody(), true);
