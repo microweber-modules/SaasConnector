@@ -1,6 +1,6 @@
 {
     "name": "SaasConnector",
-    "alias": "saas-connector",
+    "alias": "saasconnector",
     "description": "SaaS Connector module for Microweber CMS",
     "keywords": ["microweber", "saas", "connector"],
     "version": "1.0.0",

@@ -14,8 +14,8 @@ if (!function_exists('getWebsiteManagerUrl')) {
     }
 }
 
-if (!function_exists('validateLoginWithToken')) {
-    function validateLoginWithToken($token) {
+if (!function_exists('validateLoginWithTokenSaas')) {
+    function validateLoginWithTokenSaas($token) {
         return SaasHelper::validateLoginWithToken($token);
     }
 }

@@ -42,7 +42,7 @@ class SaasHelper
 
     public static function getWebsiteManagerUrl()
     {
-        return config('saas-connector.manager_url', env('SAAS_MANAGER_URL'));
+        return config('modules.saas-connector.manager_url', env('SAAS_MANAGER_URL'));
     }
 
     public static function validateLoginWithToken($token)
