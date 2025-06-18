@@ -3,12 +3,19 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['admin'])
-    ->prefix('admin')
     ->name('admin.saas-connector.')
-    ->namespace('Modules\SaasConnector\Http\Controllers\Admin')
     ->group(function () {
-        Route::get('/setup-wizard', 'SetupWizardController@index')->name('setup-wizard');
-        Route::post('/install-template', 'SetupWizardController@installTemplate')->name('install-template');
+        Route::get('/setup-wizard', [
+                \Modules\SaasConnector\Http\Controllers\Admin\SetupWizardController::class,
+                'index'
+            ]
+        )->name('setup-wizard');
+
+
+        Route::post('/install-template', [
+            \Modules\SaasConnector\Http\Controllers\Admin\SetupWizardController::class,
+            'installTemplate'])
+            ->name('install-template');
     });
 
 Route::middleware(['xss', 'web'])

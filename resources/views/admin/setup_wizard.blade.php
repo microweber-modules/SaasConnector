@@ -8,9 +8,14 @@
     <meta name="robots" content="noindex">
     <?php get_favicon_tag(); ?>
 
-    <link type="text/css" rel="stylesheet" media="all" href="<?php print mw_includes_url(); ?>default.css"/>
-    <script src="<?php print(mw()->template->get_apijs_combined_url()); ?>"></script>
-    <script>mw.lib.require('bootstrap5');</script>
+    <?php print mw_header_scripts() ?>
+
+
+    <link type="text/css" rel="stylesheet" media="all"
+          href="<?php print asset('vendor/microweber-packages/microweber-filament-theme/build/microweber-filament-theme.css'); ?>"/>
+    <link type="text/css" rel="stylesheet" media="all"
+          href="<?php print asset('vendor/microweber-packages/frontend-assets/build/install.css'); ?>"/>
+
 </head>
 
 <body>
@@ -124,5 +129,8 @@
         }
     </style>
 </main>
+
+<?php print mw_footer_scripts() ?>
+
 </body>
 </html>

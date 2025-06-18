@@ -2,6 +2,8 @@
     "name": "microweber-modules/saas-connector",
     "type": "microweber-module",
     "description": "SaaS Connector module for Microweber CMS",
+    "target-dir": "SaasConnector",
+
     "keywords": [
         "microweber",
         "saas",

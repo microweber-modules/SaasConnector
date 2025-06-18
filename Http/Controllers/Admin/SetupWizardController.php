@@ -15,6 +15,8 @@ class SetupWizardController extends AdminController
         $siteTemplates = [];
         $getTemplates = site_templates();
 
+
+
         foreach ($getTemplates as $template) {
             if (!isset($template['screenshot'])) {
                 continue;
@@ -52,7 +54,7 @@ class SetupWizardController extends AdminController
             $siteTemplates[] = $template;
         }
 
-        return view('saas_connector::admin.setup_wizard', [
+        return view('modules.saas_connector::admin.setup_wizard', [
             'templates' => $siteTemplates,
             'categories' => $getCategories
         ]);
@@ -66,7 +68,9 @@ class SetupWizardController extends AdminController
         }
 
         $installer = new TemplateInstaller();
-        $installer->setTemplate($template);
+        $installer->setSelectedTemplate($template);
+        $installer->setInstallDefaultContent(true);
+
         $installer->run();
 
         return ['success' => 'Template is installed successfully.'];

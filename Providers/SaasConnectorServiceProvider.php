@@ -7,7 +7,7 @@ use MicroweberPackages\LaravelModules\Providers\BaseModuleServiceProvider;
 class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 {
     protected string $moduleName = 'SaasConnector';
-    protected string $moduleNameLower = 'saas-connector';
+    protected string $moduleNameLower = 'saas_connector';
 
 
     /**
@@ -15,6 +15,9 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
      */
     public function register(): void
     {
+
+
+
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
