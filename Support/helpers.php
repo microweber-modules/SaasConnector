@@ -22,3 +22,10 @@ if (!function_exists('validateLoginWithTokenSaas')) {
         return SaasHelper::validateLoginWithToken($token);
     }
 }
+
+if (!function_exists('getBranding')) {
+    function getBranding()
+    {
+        return SaasHelper::getBranding();
+    }
+}

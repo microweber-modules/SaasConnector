@@ -42,7 +42,19 @@ class SaasHelper
 
     public static function getWebsiteManagerUrl()
     {
-        return config('modules.saas-connector.manager_url', env('SAAS_MANAGER_URL'));
+
+        $websiteManagerUrl = config('modules.saas-connector.manager_url', env('SAAS_MANAGER_URL'));
+        if(!$websiteManagerUrl){
+            $websiteManagerUrl = get_option('package_manager_url', 'panel');
+        }
+
+        //remove end slash
+
+        if($websiteManagerUrl){
+            $websiteManagerUrl = rtrim($websiteManagerUrl, '/');
+        }
+
+        return $websiteManagerUrl;
     }
 
     public static function validateLoginWithToken($token)
@@ -76,6 +88,27 @@ class SaasHelper
             }
         } catch (\Exception $e) {
             return false;
+        }
+
+        return false;
+    }
+
+    public static function getBranding()
+    {
+        $brandingFile = storage_path('branding_saas.json');
+        if (is_file($brandingFile)) {
+            $branding = json_decode(file_get_contents($brandingFile), true);
+            if (!empty($branding)) {
+                return $branding;
+            }
+        }
+
+        $brandingFileUser = storage_path('branding.json');
+        if (is_file($brandingFileUser)) {
+            $branding = @json_decode(file_get_contents($brandingFileUser), true);
+            if (!empty($branding)) {
+                return $branding;
+            }
         }
 
         return false;

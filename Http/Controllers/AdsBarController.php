@@ -17,7 +17,7 @@ class AdsBarController extends Controller
             $brandName = $branding['brand_name'];
         }
 
-        return view('saas_connector::ads-bar', [
+        return view('modules.saas_connector::ads-bar', [
             'saasUrl' => $saasUrl,
             'brandName' => $brandName,
             'isLiveEdit' => $isLiveEdit
