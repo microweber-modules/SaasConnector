@@ -50,6 +50,11 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
             // Frontend scripts handling
         event_bind('mw.front', function () {
 
+            if(is_ajax()) {
+                return;
+            }
+
+
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
             // Append admin panel scripts
