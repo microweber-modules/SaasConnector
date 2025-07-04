@@ -7,7 +7,9 @@ use MicroweberPackages\LaravelModules\Providers\BaseModuleServiceProvider;
 class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 {
     protected string $moduleName = 'SaasConnector';
-    protected string $moduleNameLower = 'saas_connector';    /**
+    protected string $moduleNameLower = 'saas_connector';
+
+    /**
      * Register the service provider.
      */
     public function register(): void
@@ -36,30 +38,32 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 
 
         // Admin sidebar button for "My Websites"
-        event_bind('mw.admin.sidebar.li.first', function () {
-            $saasUrl = getWebsiteManagerUrl();
+//        event_bind('mw.admin.sidebar.li.first', function () {
+//            $saasUrl = getWebsiteManagerUrl();
+//
+//            if ($saasUrl) {
+//                echo '<a href="' . $saasUrl . '/projects"
+//                        style="border-radius: 40px;" class="btn btn-outline-primary">
+//                   <i class="mdi mdi-arrow-left"></i> &nbsp; My Websites
+//                </a>';
+//            }
+//        });
 
-            if ($saasUrl) {
-                echo '<a href="' . $saasUrl . '/projects"
-                        style="border-radius: 40px;" class="btn btn-outline-primary">
-                   <i class="mdi mdi-arrow-left"></i> &nbsp; My Websites
-                </a>';
-            }
-        });
-
-            // Frontend scripts handling
+        // Frontend scripts handling
         event_bind('mw.front', function () {
 
-            if(is_ajax()) {
+            if (is_ajax()) {
                 return;
             }
 
 
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
+
+
             // Append admin panel scripts
             if (isset($checkWebsite['appendScriptsAdminPanel']) && !empty($checkWebsite['appendScriptsAdminPanel'])) {
-                event_bind('admin_head', function () use($checkWebsite) {
+                event_bind('admin_head', function () use ($checkWebsite) {
                     echo $checkWebsite['appendScriptsAdminPanel'];
                 });
             }
@@ -75,52 +79,56 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 
                 if (!$hasActiveSubscription) {
 
-                        $canISeeTheWebsite = false;
-                        if (app()->user_manager->session_get('hidden_preview')) {
-                            $canISeeTheWebsite = true;
-                        }
+                    $canISeeTheWebsite = false;
+                    if (app()->user_manager->session_get('hidden_preview')) {
+                        $canISeeTheWebsite = true;
+                    }
 
-                        // SHOW WEBSITE PASSWORD PROTECTED PREVIEW
-                        if (isset($_GET['hidden_preview'])) {
-                            if (!in_live_edit() && !user_id()) {
-                                echo view('modules.saas_connector::hidden-website-preview', [
-                                    'branding' => getBranding(),
-                                ]);
-                                exit;
-                            }
+                    // SHOW WEBSITE PASSWORD PROTECTED PREVIEW
+                    if (isset($_GET['hidden_preview'])) {
+                        if (!in_live_edit() && !user_id()) {
+                            echo view('modules.saas_connector::hidden-website-preview', [
+                                'branding' => getBranding(),
+                            ]);
+                            exit;
                         }
+                    }
 
-                        // SHOW UPGRADE PLAN
-                        if (!$canISeeTheWebsite) {
-                            if (!in_live_edit() && !user_id()) {
-                                echo view('modules.saas_connector::upgrade-plan', [
-                                    'branding' => getBranding(),
-                                ]);
-                                exit;
-                            }
+                    // SHOW UPGRADE PLAN
+                    if (!$canISeeTheWebsite) {
+                        if (!in_live_edit() && !user_id()) {
+                            echo view('modules.saas_connector::upgrade-plan', [
+                                'branding' => getBranding(),
+                            ]);
+                            exit;
                         }
+                    }
 
                 }
-            }
 
-
-            if (!in_live_edit()) {
-                if (isset($checkWebsite['appendScriptsFrontendLogged']) && !empty($checkWebsite['appendScriptsFrontendLogged'])) {
-                    if (user_id()) {
-                        meta_tags_footer_add($checkWebsite['appendScriptsFrontendLogged']);
+                if (!in_live_edit()) {
+                    if (isset($checkWebsite['appendScriptsFrontendLogged']) && !empty($checkWebsite['appendScriptsFrontendLogged'])) {
+                        if (user_id()) {
+                            meta_tags_footer_add($checkWebsite['appendScriptsFrontendLogged']);
+                        }
+                    }
+                    if (isset($checkWebsite['appendScriptsFrontend']) && !empty($checkWebsite['appendScriptsFrontend'])) {
+                        if (!user_id()) {
+                            meta_tags_footer_add($checkWebsite['appendScriptsFrontend']);
+                        }
+                    }
+                } else {
+                    if (isset($checkWebsite['appendScriptsLiveEdit']) && !empty($checkWebsite['appendScriptsLiveEdit'])) {
+                        meta_tags_footer_add($checkWebsite['appendScriptsLiveEdit']);
                     }
                 }
 
-                if (isset($checkWebsite['appendScriptsFrontend']) && !empty($checkWebsite['appendScriptsFrontend'])) {
-                    if (!user_id()) {
-                        meta_tags_footer_add($checkWebsite['appendScriptsFrontend']);
-                    }
-                }
-            } else {
-                if (isset($checkWebsite['appendScriptsLiveEdit']) && !empty($checkWebsite['appendScriptsLiveEdit'])) {
-                    meta_tags_footer_add($checkWebsite['appendScriptsLiveEdit']);
-                }
+
+
             }
+
+
+
         });
 
         // Ads bar functionality (commented out by default)
