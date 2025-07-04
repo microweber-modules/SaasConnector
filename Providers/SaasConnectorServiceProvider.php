@@ -50,7 +50,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 //        });
 
         // Frontend scripts handling
-        event_bind('mw.front', function () {
+        event_bind('mw.init', function () {
 
             if (is_ajax()) {
                 return;
@@ -61,15 +61,19 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
             $checkWebsite = getSaasWebsiteInfoFromServer();
 
 
-            // Append admin panel scripts
-            if (isset($checkWebsite['appendScriptsAdminPanel']) && !empty($checkWebsite['appendScriptsAdminPanel'])) {
-                event_bind('admin_head', function () use ($checkWebsite) {
-                    echo $checkWebsite['appendScriptsAdminPanel'];
-                });
-            }
 
             // Handle website subscription status and preview mode
             if (isset($checkWebsite['success'])) {
+
+
+                // Append admin panel scripts
+                if (isset($checkWebsite['appendScriptsAdminPanel']) && !empty($checkWebsite['appendScriptsAdminPanel'])) {
+
+                    admin_head($checkWebsite['appendScriptsAdminPanel']);
+
+                }
+
+
                 $hasActiveSubscription = false;
                 if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
                     $hasActiveSubscription = true;
