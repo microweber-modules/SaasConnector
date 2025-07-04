@@ -50,7 +50,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 //        });
 
         // Frontend scripts handling
-        event_bind('mw.init', function () {
+        event_bind('mw.front', function () {
 
             if (is_ajax()) {
                 return;
@@ -59,7 +59,6 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
-
 
 
             // Handle website subscription status and preview mode
@@ -78,8 +77,9 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                 if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
                     $hasActiveSubscription = true;
                 }
-
-                define('HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
+                if (!defined('HAS_ACTIVE_SUBSCRIPTION')) {
+                    define('HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
+                }
 
                 if (!$hasActiveSubscription) {
 
@@ -128,9 +128,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                 }
 
 
-
             }
-
 
 
         });
