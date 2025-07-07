@@ -50,7 +50,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 //        });
 
         // Frontend scripts handling
-        event_bind('mw.front', function () {
+        event_bind('mw.init', function () {
 
             if (is_ajax()) {
                 return;
@@ -59,7 +59,6 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
-
 
             // Handle website subscription status and preview mode
             if (isset($checkWebsite['success'])) {
@@ -71,44 +70,45 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                     admin_head($checkWebsite['appendScriptsAdminPanel']);
 
                 }
+                event_bind('mw.front', function () use  ($checkWebsite) {
 
-
-                $hasActiveSubscription = false;
-                if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
-                    $hasActiveSubscription = true;
-                }
-                if (!defined('HAS_ACTIVE_SUBSCRIPTION')) {
-                    define('HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
-                }
-
-                if (!$hasActiveSubscription) {
-
-                    $canISeeTheWebsite = false;
-                    if (app()->user_manager->session_get('hidden_preview')) {
-                        $canISeeTheWebsite = true;
+                    $hasActiveSubscription = false;
+                    if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
+                        $hasActiveSubscription = true;
+                    }
+                    if (!defined('HAS_ACTIVE_SUBSCRIPTION')) {
+                        define('HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
                     }
 
-                    // SHOW WEBSITE PASSWORD PROTECTED PREVIEW
-                    if (isset($_GET['hidden_preview'])) {
-                        if (!in_live_edit() && !user_id()) {
-                            echo view('modules.saas_connector::hidden-website-preview', [
-                                'branding' => getBranding(),
-                            ]);
-                            exit;
+                    if (!$hasActiveSubscription) {
+
+                        $canISeeTheWebsite = false;
+                        if (app()->user_manager->session_get('hidden_preview')) {
+                            $canISeeTheWebsite = true;
                         }
-                    }
 
-                    // SHOW UPGRADE PLAN
-                    if (!$canISeeTheWebsite) {
-                        if (!in_live_edit() && !user_id()) {
-                            echo view('modules.saas_connector::upgrade-plan', [
-                                'branding' => getBranding(),
-                            ]);
-                            exit;
+                        // SHOW WEBSITE PASSWORD PROTECTED PREVIEW
+                        if (isset($_GET['hidden_preview'])) {
+                            if (!in_live_edit() && !user_id()) {
+                                echo view('modules.saas_connector::hidden-website-preview', [
+                                    'branding' => getBranding(),
+                                ]);
+                                exit;
+                            }
                         }
-                    }
 
-                }
+                        // SHOW UPGRADE PLAN
+                        if (!$canISeeTheWebsite) {
+                            if (!in_live_edit() && !user_id()) {
+                                echo view('modules.saas_connector::upgrade-plan', [
+                                    'branding' => getBranding(),
+                                ]);
+                                exit;
+                            }
+                        }
+
+                    }
+                });
 
                 if (!in_live_edit()) {
                     if (isset($checkWebsite['appendScriptsFrontendLogged']) && !empty($checkWebsite['appendScriptsFrontendLogged'])) {
