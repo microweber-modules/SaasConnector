@@ -9,11 +9,11 @@ Route::middleware('web')
     ->group(function () {
         Route::any('/login-with-token', [LoginWithTokenController::class, 'index'])->name('login-with-token');
         Route::get('/ads-bar', [AdsBarController::class, 'index'])->name('ads-bar');
-        
+
         // Clear cache route
         Route::get('/saas-clearcache', function (){
             $token = request()->get('token', false);
-            
+
             if (validateLoginWithTokenSaas($token)) {
                 clearcache();
                 return 'Cache cleared';
@@ -32,7 +32,7 @@ Route::middleware('web')
 
             $websiteManagerUrl = getWebsiteManagerUrl();
             if (!$websiteManagerUrl) {
-                return app()->user_manager->redirect(site_url());
+                return redirect(site_url());
             }
 
             $verifyUrl = $websiteManagerUrl . '/api/websites/validate-password-preview';
@@ -54,7 +54,7 @@ Route::middleware('web')
 
             if (isset($verifyCheck['success']) && $verifyCheck['success']) {
                 app()->user_manager->session_set('hidden_preview', true);
-                return app()->user_manager->redirect(site_url());
+                return redirect(site_url());
             } else {
                 return app()->user_manager->redirect(site_url() . '?hidden_preview=1&error=wrong_password');
             }
