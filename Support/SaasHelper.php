@@ -73,14 +73,16 @@ class SaasHelper
         $websiteManagerUrl = rtrim($websiteManagerUrl, '/');
 
         $client = new Client();
-        $response = $client->request('GET', $websiteManagerUrl . '/api/websites/verify-login-token', [
+        $params =  [
             'form_params' => [
                 'token' => $token,
                 'domain' => $domain
             ]
-        ]);
-
-
+        ];
+       // dd($params);
+        $response = $client->request('POST', $websiteManagerUrl . '/api/websites/verify-login-token',$params);
+ // dump(json_decode($response->getBody(), true));
+//dd($params);
         try {
 
             if ($response->getStatusCode() == 200) {

@@ -21,6 +21,7 @@ class LoginWithTokenController extends Controller
         $validateLoginWithToken = validateLoginWithTokenSaas($token);
 
         if ($validateLoginWithToken) {
+
             $user = User::where('is_admin', '=', '1')->first();
             if ($user !== null) {
                 if ($syncAdminDetails) {

@@ -2,6 +2,10 @@
 
 namespace Modules\SaasConnector\Providers;
 
+use Filament\Facades\Filament;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\HtmlString;
 use MicroweberPackages\LaravelModules\Providers\BaseModuleServiceProvider;
 
 class SaasConnectorServiceProvider extends BaseModuleServiceProvider
@@ -36,18 +40,43 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
     private function bindEvents(): void
     {
 
+        Filament::serving(function () {
+            if (is_ajax()) {
+                return;
+            }
+            if (!user_id()) {
+                return;
+            }
 
-        // Admin sidebar button for "My Websites"
-//        event_bind('mw.admin.sidebar.li.first', function () {
-//            $saasUrl = getWebsiteManagerUrl();
-//
-//            if ($saasUrl) {
-//                echo '<a href="' . $saasUrl . '/projects"
-//                        style="border-radius: 40px;" class="btn btn-outline-primary">
-//                   <i class="mdi mdi-arrow-left"></i> &nbsp; My Websites
-//                </a>';
-//            }
-//        });
+            $script = '
+
+<script>
+    setTimeout(() => {
+        if (typeof gtag !== "undefined") {
+            gtag("set", {"user_id": "' . user_id() . '"}); // Set the user ID using signed-in user_id.
+        }
+        if (typeof posthog !== "undefined") {
+
+            posthog.opt_in_capturing()
+            posthog.startSessionRecording()
+
+            posthog.identify(
+                "' . user_id() . '",
+                {
+                    email: "' . user_email() . '",
+                    name: "' . user_name() . '"
+                }
+            );
+        }
+    }, 500);
+</script>
+
+                ';
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::BODY_END,
+                fn() => new HtmlString($script)
+            );
+        });
 
         // Frontend scripts handling
         event_bind('mw.init', function () {
@@ -56,12 +85,51 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                 return;
             }
 
-
+//dd(user_id());
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
 
             // Handle website subscription status and preview mode
             if (isset($checkWebsite['success'])) {
+
+                if (mw()->ui->enable_service_links()) {
+
+                    $saasUrl = getWebsiteManagerUrl();
+
+                    \MicroweberPackages\LiveEdit\Facades\LiveEditManager::getMenuInstance('top_right_menu')
+                        ->addChild('My websites', [
+                            'attributes' => [
+                                'id' => 'js-live-edit-my-websites-link',
+                                'href' => $saasUrl . '/projects',
+                                'target' => '_blank',
+
+                                'icon' => '<svg viewBox="0 0 40 32.29">
+                                                                <path
+                                                                    d="M40 3v26c0 .8-.3 1.5-.9 2.1-.6.6-1.3.9-2.1.9H3c-.8 0-1.5-.3-2.1-.9-.6-.6-.9-1.3-.9-2.1V3C0 2.2.3 1.5.9.9 1.5.3 2.2 0 3 0h34c.8 0 1.5.3 2.1.9.6.6.9 1.3.9 2.1zM3 8.45h34V3H3v5.45zm0 6.45V29h34V14.9H3zM3 29V3v26z"/>
+                                                            </svg>'
+                            ]
+                        ]);
+
+
+                    \MicroweberPackages\LiveEdit\Facades\LiveEditManager::getMenuInstance('top_right_menu')
+                        ->menuItems
+                        ->getChild('My websites')
+                        ->setExtra('orderNumber', 13);
+
+                }
+
+                /*            // Admin sidebar button for "My Websites"
+                            event_bind('mw.admin.sidebar.li.first', function () {
+                                $saasUrl = getWebsiteManagerUrl();
+
+                                if ($saasUrl) {
+                                    echo '<a href="' . $saasUrl . '/projects"
+                                    style="border-radius: 40px;" class="btn btn-outline-primary">
+                               <i class="mdi mdi-arrow-left"></i> &nbsp; My Websites
+                            </a>';
+                                }
+                            });
+            */
 
 
                 // Append admin panel scripts
@@ -70,7 +138,9 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                     admin_head($checkWebsite['appendScriptsAdminPanel']);
 
                 }
-                event_bind('mw.front', function () use  ($checkWebsite) {
+
+
+                event_bind('mw.front', function () use ($checkWebsite) {
 
                     $hasActiveSubscription = false;
                     if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
