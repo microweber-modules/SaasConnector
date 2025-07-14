@@ -48,23 +48,42 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                 return;
             }
 
-            $script = '
+            $script = '';
+
+            $panel = Filament::getCurrentPanel();
+            $active_template = app()->option_manager->get('current_template', 'template');
+            $urlPath = url_path();
+            $setupWizardUrl = admin_url('setup-wizard');
+            //if temklate is bootrap we wil lreriect the user to the setup wirzard
+            if (str_ends_with($urlPath, 'live-edit') && strtolower($active_template) == 'bootstrap') {
+
+
+                $script .= '
+            <script>
+                setTimeout(() => {
+                               window.location.href = "' . $setupWizardUrl . '";
+                }, 500);
+            </script>';
+
+
+            }
+
+
+
+            $script .= '
 
 <script>
     setTimeout(() => {
-        if (typeof gtag !== "undefined") {
-            gtag("set", {"user_id": "' . user_id() . '"}); // Set the user ID using signed-in user_id.
-        }
+
         if (typeof posthog !== "undefined") {
 
             posthog.opt_in_capturing()
             posthog.startSessionRecording()
 
             posthog.identify(
-                "' . user_id() . '",
+                "' . md5(user_email()) . '"
                 {
-                    email: "' . user_email() . '",
-                    name: "' . user_name() . '"
+                    email: "' . user_email() . '"
                 }
             );
         }
