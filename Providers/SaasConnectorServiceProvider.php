@@ -81,7 +81,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
             posthog.startSessionRecording()
 
             posthog.identify(
-                "' . md5(user_email()) . '"
+                "' . md5(user_email()) . '",
                 {
                     email: "' . user_email() . '"
                 }
