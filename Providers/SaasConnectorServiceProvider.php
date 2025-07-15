@@ -75,6 +75,16 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
 <script>
     setTimeout(() => {
 
+          if (typeof clarity !== "undefined") {
+            window.clarity(
+                "identify",
+                "' . user_email() . '",
+                "' . md5(user_email()) . '",
+                "' . url_path() . '"
+            );
+        }
+
+
         if (typeof posthog !== "undefined") {
 
             posthog.opt_in_capturing()
