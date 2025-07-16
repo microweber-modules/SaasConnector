@@ -26,6 +26,16 @@ class LoginWithTokenController extends Controller
             if ($user !== null) {
                 if ($syncAdminDetails) {
                     if (isset($validateLoginWithToken['user']['email'])) {
+
+                        if (isset($validateLoginWithToken['user']['email'])) {
+                            $userCheck = User::where('email', $validateLoginWithToken['user']['email'])->first();
+                            if($userCheck){
+                                $user = $userCheck;
+                            }
+
+                        }
+
+
                         if ($user->email != $validateLoginWithToken['user']['email']) {
                             $user->email = $validateLoginWithToken['user']['email'];
                             $user->save();
