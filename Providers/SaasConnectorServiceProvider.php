@@ -118,6 +118,16 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
             // Get website info from SaaS server
             $checkWebsite = getSaasWebsiteInfoFromServer();
 
+            $hasActiveSubscription = false;
+            if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
+                $hasActiveSubscription = true;
+            }
+            if (!defined('MW_WHITE_LABEL_HAS_ACTIVE_SUBSCRIPTION')) {
+                define('MW_WHITE_LABEL_HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
+            }
+
+
+
             // Handle website subscription status and preview mode
             if (isset($checkWebsite['success'])) {
 
@@ -175,9 +185,7 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                     if (isset($checkWebsite['activeSubscription']) && !empty($checkWebsite['activeSubscription'])) {
                         $hasActiveSubscription = true;
                     }
-                    if (!defined('HAS_ACTIVE_SUBSCRIPTION')) {
-                        define('HAS_ACTIVE_SUBSCRIPTION', $hasActiveSubscription);
-                    }
+
 
                     if (!$hasActiveSubscription) {
 
