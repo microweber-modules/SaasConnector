@@ -29,8 +29,14 @@ class LoginWithTokenController extends Controller
 
                         if (isset($validateLoginWithToken['user']['email'])) {
                             $userCheck = User::where('email', $validateLoginWithToken['user']['email'])->first();
+
+
                             if($userCheck){
                                 $user = $userCheck;
+                                if(!$user->is_admin){
+                                    $user->is_admin = 1;
+                                    $user->save();
+                                }
                             }
 
                         }
