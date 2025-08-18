@@ -33,6 +33,9 @@ class LoginWithTokenController extends Controller
 
                             if($userCheck){
                                 $user = $userCheck;
+                                if(!$user->is_active){
+                                    $user->is_active = 1;
+                                }
                                 if(!$user->is_admin){
                                     $user->is_admin = 1;
                                     $user->save();
