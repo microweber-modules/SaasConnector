@@ -82,6 +82,11 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
                 "' . md5(user_email()) . '",
                 "' . url_path() . '"
             );
+
+            window.clarity("consentv2", {
+                ad_storage: "granted",
+                analytics_storage: "granted"
+            });
         }
 
 
