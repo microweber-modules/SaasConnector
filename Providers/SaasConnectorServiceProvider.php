@@ -55,7 +55,18 @@ class SaasConnectorServiceProvider extends BaseModuleServiceProvider
             $urlPath = url_path();
             $setupWizardUrl = admin_url('setup-wizard');
             //if temklate is bootrap we wil lreriect the user to the setup wirzard
-            if (str_ends_with($urlPath, 'live-edit') && strtolower($active_template) == 'bootstrap') {
+
+
+
+            if (
+                ( str_ends_with($urlPath, 'live-edit') or
+                str_ends_with($urlPath, 'admin'))
+                &&
+                (
+                strtolower($active_template) == 'bootstrap' or ! $active_template
+                )
+
+            ) {
 
 
                 $script .= '
